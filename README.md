@@ -3,6 +3,8 @@
 RuneScape 2 (2004Scape) game server. Handles game logic, player data, cache
 packing, OAuth authentication, and serves game data files over HTTP + WebSocket.
 
+Forked from [2004scape/Server](https://github.com/2004scape/Server) (Lost City).
+
 The web client lives in a separate repository:
 [h4ks-com/h4kscape-client](https://github.com/h4ks-com/h4kscape-client)
 
@@ -83,3 +85,7 @@ npm install
 cp .env.example .env   # edit as needed
 npm run dev
 ```
+
+## License
+
+MIT — see [LICENSE](LICENSE). Originally by [Lost City / 2004scape](https://github.com/2004scape/Server).
