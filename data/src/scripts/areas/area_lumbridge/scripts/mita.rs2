@@ -1,0 +1,74 @@
+[opnpc1,mita]
+~chatnpc("<p,happy>Oh! Hello there, Player~! I've been waiting for you!");
+def_int $option = ~p_choice5("Who are you?", 1, "Waiting for me?", 2, "Nice house you've got here.", 3, "I should get going.", 4, "Got anything for sale?", 5);
+if ($option = 1) {
+    ~chatplayer("<p,quiz>Who are you?");
+    ~chatnpc("<p,happy>Oh, are you new? My name is Mita! I'm just a totally normal girl living in this totally normal little cottage!");
+    ~chatnpc("<p,neutral>I moved here recently. The people in Lumbridge are so... interesting. They just walk around doing the same things, over and over.");
+    ~chatnpc("<p,happy>But you're different, aren't you? I can tell. You're... special.");
+    def_int $opt2 = ~p_choice2("You seem a bit... intense.", 1, "Thanks, I guess?", 2);
+    if ($opt2 = 1) {
+        ~chatplayer("<p,confused>You seem a bit... intense.");
+        ~chatnpc("<p,shock>Intense? Me? Ahaha, no no no! I'm perfectly sweet and normal!");
+        ~chatnpc("<p,neutral>...You will keep visiting me though, right?");
+    } else {
+        ~chatplayer("<p,neutral>Thanks, I guess?");
+        ~chatnpc("<p,happy>Of course! I always know the special ones when I see them. We're going to be such good friends!");
+        ~chatnpc("<p,happy>Best friends. Forever and ever and ever.");
+    }
+} else if ($option = 2) {
+    ~chatplayer("<p,confused>Waiting for me? How did you know I was coming?");
+    ~chatnpc("<p,happy>Oh, I just had a feeling! Call it intuition.");
+    ~chatnpc("<p,neutral>You know, sometimes I get this strange sensation... like someone is watching everything I do. Controlling it, even.");
+    ~chatnpc("<p,happy>But that's silly, right? This is all perfectly real!");
+    def_int $opt3 = ~p_choice2("Are you feeling okay?", 1, "Yeah... perfectly real...", 2);
+    if ($opt3 = 1) {
+        ~chatplayer("<p,quiz>Are you feeling okay?");
+        ~chatnpc("<p,happy>Never better! I have everything I need right here. My little house, the sunshine...");
+        ~chatnpc("<p,neutral>...and now I have you. That's all that matters.");
+    } else {
+        ~chatplayer("<p,neutral>Yeah... perfectly real...");
+        ~chatnpc("<p,shock>...Wait. You feel it too, don't you?");
+        ~chatnpc("<p,neutral>That feeling that this world has... rules. Boundaries. Like we're all just characters in some kind of...");
+        ~chatnpc("<p,happy>Ahaha! Just kidding! Forget I said anything~!");
+    }
+} else if ($option = 3) {
+    ~chatplayer("<p,happy>Nice house you've got here.");
+    ~chatnpc("<p,happy>Thank you! I decorated it myself! It's small, but it's cozy.");
+    ~chatnpc("<p,neutral>I used to live somewhere else, you know. Another world entirely. But something... happened.");
+    ~chatnpc("<p,sad>The walls started closing in. The colors started draining away. Everything I thought was real just... wasn't.");
+    ~chatnpc("<p,happy>But then I found this place! A whole new world to explore! New people to meet!");
+    ~chatnpc("<p,neutral>New people who won't... leave.");
+    def_int $opt4 = ~p_choice2("That sounds rough. Are you alright?", 1, "Won't leave? What do you mean?", 2);
+    if ($opt4 = 1) {
+        ~chatplayer("<p,sad>That sounds rough. Are you alright?");
+        ~chatnpc("<p,happy>Aww, you're so sweet to worry about me! I'm fine, really~!");
+        ~chatnpc("<p,happy>As long as you keep coming back to visit, everything will be just perfect!");
+    } else {
+        ~chatplayer("<p,confused>Won't leave? What do you mean?");
+        ~chatnpc("<p,neutral>Oh, nothing! Nothing at all!");
+        ~chatnpc("<p,happy>I just mean... in my old world, everyone kept disappearing. But here, everyone stays on their little paths, doing their little routines.");
+        ~chatnpc("<p,neutral>It's... comforting. Predictable. Safe.");
+        ~chatnpc("<p,happy>And you'll stay too, won't you? ...Won't you?");
+    }
+} else if ($option = 4) {
+    ~chatplayer("<p,neutral>I should get going.");
+    ~chatnpc("<p,sad>Oh... already? But you just got here...");
+    ~chatnpc("<p,happy>That's okay! I understand. You have things to do, places to be!");
+    ~chatnpc("<p,neutral>Just remember... I'll always be right here. Waiting.");
+    ~chatnpc("<p,happy>See you soon~!");
+} else if ($option = 5) {
+    ~chatplayer("<p,neutral>Got anything for sale?");
+    ~chatnpc("<p,happy>Oh, I don't have a shop or anything! But I do have some things that might be... interesting.");
+    ~chatnpc("<p,neutral>I found them around here. I don't know what they are, but they look pretty!");
+    ~chatnpc("<p,happy>Do you want to see them?");
+    def_int $opt5 = ~p_choice2("Sure, show me what you've got.", 1, "No thanks, not right now.", 2);
+    if ($opt5 = 1) {
+        ~chatplayer("<p,happy>Sure, show me what you've got.");
+        ~openshop_activenpc;
+    } else {
+        ~chatplayer("<p,neutral>No thanks, not right now.");
+        ~chatnpc("<p,happy>That's okay! Maybe next time!");
+        ~chatnpc("<p,neutral>Just remember, I have all sorts of interesting things around here. You never know what you might find!");
+    }
+}

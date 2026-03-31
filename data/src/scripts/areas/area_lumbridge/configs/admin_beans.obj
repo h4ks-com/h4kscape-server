@@ -1,0 +1,14 @@
+[admin_beans]
+name=Admin Beans
+desc=Magical beans that grant administrative powers. Non-tradeable.
+cost=0
+model=model_2381_obj
+recol1s=4232
+recol1d=11200
+2dxof=7
+2dyof=39
+2dzoom=920
+2dyan=676
+2dxan=240
+tradeable=no
+iop1=Inspect

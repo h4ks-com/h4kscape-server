@@ -1,0 +1,9 @@
+// Admin Beans inspection
+[opheld1,admin_beans]
+mes("These magical beans pulse with administrative power.");
+
+// Admin Beans drop — destroy instead of placing on ground
+[opheld5,admin_beans]
+inv_delslot(inv, last_slot);
+mes("The Admin Beans crumble to dust as they leave your hands.");
+sound_synth(put_down, 0, 0);

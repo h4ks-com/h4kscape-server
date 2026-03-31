@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logging in...</title>
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .status { text-align: center; font-size: 14px; }
+        .error { color: #ff4444; }
+    </style>
+</head>
+<body>
+    <div class="status" id="status">Completing login...</div>
+    <script>
+        (async () => {
+            const LOGTO_ENDPOINT = '<%= logtoEndpoint %>';
+            const APP_ID = '<%= appId %>';
+            const CALLBACK_URL = '<%= callbackUrl %>';
+
+            const status = document.getElementById('status');
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const code = params.get('code');
+                const codeVerifier = localStorage.getItem('oauth_code_verifier');
+
+                if (!code) {
+                    throw new Error('No authorization code received from Logto.');
+                }
+                if (!codeVerifier) {
+                    throw new Error('Missing PKCE code verifier. Please try logging in again.');
+                }
+
+                status.textContent = 'Exchanging authorization code...';
+
+                // Step 1: Exchange auth code for tokens via Logto token endpoint (PKCE)
+                const tokenRes = await fetch(LOGTO_ENDPOINT + '/oidc/token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        grant_type: 'authorization_code',
+                        code: code,
+                        redirect_uri: CALLBACK_URL,
+                        client_id: APP_ID,
+                        code_verifier: codeVerifier
+                    })
+                });
+
+                if (!tokenRes.ok) {
+                    const err = await tokenRes.text();
+                    throw new Error('Token exchange failed: ' + err);
+                }
+
+                const tokens = await tokenRes.json();
+                localStorage.removeItem('oauth_code_verifier');
+
+                status.textContent = 'Verifying identity...';
+
+                // Step 2: Exchange the access_token for a short-lived game session token
+                const exchangeRes = await fetch('/auth/exchange', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ access_token: tokens.access_token })
+                });
+
+                if (!exchangeRes.ok) {
+                    const err = await exchangeRes.text();
+                    throw new Error('Session exchange failed: ' + err);
+                }
+
+                const session = await exchangeRes.json();
+
+                // Step 3: Send credentials back to the game window via postMessage
+                if (window.opener) {
+                    window.opener.postMessage({
+                        type: 'oauth_callback',
+                        username: session.username,
+                        sessionToken: session.sessionToken
+                    }, window.location.origin);
+                    status.textContent = 'Login successful! Closing...';
+                    setTimeout(() => window.close(), 500);
+                } else {
+                    // Fallback: store in localStorage and redirect to game
+                    localStorage.setItem('oauth_session', JSON.stringify(session));
+                    window.location.href = '/rs2.cgi?lowmem=0&plugin=0';
+                }
+            } catch (err) {
+                localStorage.removeItem('oauth_code_verifier');
+                status.className = 'status error';
+                status.textContent = 'Login failed: ' + err.message;
+                console.error('OAuth callback error:', err);
+            }
+        })();
+    </script>
+</body>
+</html>
