@@ -18,7 +18,7 @@ WORKDIR /app
 
 # Install dependencies first (layer caching)
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev --ignore-scripts && npm install tsx prisma prisma-kysely
+RUN npm pkg delete scripts.prepare && npm ci --omit=dev && npm install tsx prisma prisma-kysely
 
 # Copy full server source
 COPY . .
