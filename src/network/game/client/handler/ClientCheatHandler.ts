@@ -67,7 +67,53 @@ export default class ClientCheatHandler extends MessageHandler<ClientCheat> {
         if (!Environment.NODE_PRODUCTION && player.staffModLevel >= 4) {
             // developer commands
 
-            if (cmd[0] === Environment.NODE_DEBUGPROC_CHAR) {
+            if (cmd === '~teleplayer') {
+                if (args.length < 2) {
+                    player.messageGame('Usage: ::~teleplayer <name> <town>');
+                    return false;
+                }
+
+                const targetName = args[0];
+                const town = args[1].toLowerCase();
+
+                const towns: Record<string, [number, number, number, number, number]> = {
+                    home:       [0, 50, 50, 22, 22],
+                    varrock:    [0, 50, 53, 13, 31],
+                    falador:    [0, 46, 52, 21, 51],
+                    draynor:    [0, 48, 50,  8, 50],
+                    portsarim:  [0, 47, 50, 19, 25],
+                    rimmington: [0, 46, 50, 12, 10],
+                    alkharid:   [0, 51, 49, 28, 47],
+                    seers:      [0, 42, 54, 44, 29],
+                    entrana:    [0, 44, 52, 11, 16],
+                    brimhaven:  [0, 43, 49, 50, 41],
+                    ardy:       [0, 41, 51, 39, 38]
+                };
+
+                const dest = towns[town];
+                if (!dest) {
+                    player.messageGame(`Unknown town: ${town}. Valid: ${Object.keys(towns).join(', ')}`);
+                    return false;
+                }
+
+                const other = World.getPlayerByUsername(targetName);
+                if (!other) {
+                    player.messageGame(`${targetName} is not logged in.`);
+                    return false;
+                }
+
+                other.closeModal();
+                if (!other.canAccess()) {
+                    player.messageGame(`${targetName} is busy right now.`);
+                    return false;
+                }
+                other.clearInteraction();
+                other.unsetMapFlag();
+
+                const [level, mx, mz, lx, lz] = dest;
+                other.teleJump((mx << 6) + lx, (mz << 6) + lz, level);
+                player.messageGame(`Teleported ${targetName} to ${town}.`);
+            } else if (cmd[0] === Environment.NODE_DEBUGPROC_CHAR) {
                 // debugprocs are NOT allowed on live ;)
                 const script = ScriptProvider.getByName(`[debugproc,${cmd.slice(1)}]`);
                 if (!script) {
